@@ -24,6 +24,43 @@
         <div class="editor-section">
           <div class="label-group">
             <div class="label">Source Code</div>
+            <div class="editor-actions">
+              <button
+                id="save-tpl-btn"
+                class="icon-btn"
+                title="Save current as new template"
+              >
+                💾
+              </button>
+              <button
+                id="delete-tpl-btn"
+                class="icon-btn"
+                title="Delete current template"
+                style="display: none"
+              >
+                🗑️
+              </button>
+              <button
+                id="export-tpl-btn"
+                class="icon-btn"
+                title="Export templates"
+              >
+                📤
+              </button>
+              <button
+                id="import-tpl-btn"
+                class="icon-btn"
+                title="Import templates"
+              >
+                📥
+              </button>
+              <input
+                type="file"
+                id="import-input"
+                accept=".json"
+                style="display: none"
+              />
+            </div>
           </div>
           <textarea
             id="code-editor"

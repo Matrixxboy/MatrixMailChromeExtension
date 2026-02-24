@@ -3,7 +3,7 @@
   "name": "MatrixMail Editor",
   "version": "1.0",
   "description": "Matrix/Vercel themed HTML editor for Gmail.",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
