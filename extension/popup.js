@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const importTplBtn = document.getElementById("import-tpl-btn")
   const importInput = document.getElementById("import-input")
 
+  // Modal Elements
+  const modalOverlay = document.getElementById("modal-overlay")
+  const modalTitle = document.getElementById("modal-title")
+  const modalMessage = document.getElementById("modal-message")
+  const modalInput = document.getElementById("modal-input")
+  const modalCancel = document.getElementById("modal-cancel")
+  const modalConfirm = document.getElementById("modal-confirm")
+
   // Verify elements exist
   if (
     !editor ||
@@ -21,7 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     !deleteTplBtn ||
     !exportTplBtn ||
     !importTplBtn ||
-    !importInput
+    !importInput ||
+    !modalOverlay
   ) {
     console.error("Missing DOM elements. Check popup.html IDs.")
     return
@@ -29,46 +38,119 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const defaultTemplates = {
     protocol: `
-<div style="font-family: 'Inter', sans-serif; color: #2d232e; background: #ffffff; padding: 40px; border: 1px solid rgba(157, 141, 241, 0.2); border-radius: 16px; max-width: 600px; margin: auto; box-shadow: 0 10px 40px rgba(157, 141, 241, 0.1);">
-  <h1 style="color: #9d8df1; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px; font-size: 28px;">Lavender Protocol</h1>
-  <p style="font-size: 16px; line-height: 1.6; color: #7d6e83;">Hello <strong>Cipher</strong>,</p>
-  <p style="font-size: 16px; line-height: 1.6; color: #7d6e83;">Your secure environment has been successfully refactored to the new minimal aesthetic. Enjoy the clarity.</p>
-  <div style="margin-top: 32px; padding: 16px; background: #f8f7ff; border-radius: 12px; border-left: 4px solid #9d8df1; font-size: 14px; color: #9d8df1; font-weight: 500;">
-    SYSTEM STATUS: OPTIMIZED | THEME: PASTEL ZEN
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f0f0f0; background: #0a0a0a; padding: 40px; border: 1px solid #262626; border-radius: 12px; max-width: 600px; margin: 20px auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+  <h1 style="color: #ffffff; font-weight: 700; letter-spacing: -1px; margin: 0 0 16px 0; font-size: 32px;">Encrypted Message</h1>
+  <p style="font-size: 16px; line-height: 1.7; color: #a1a1aa; margin-bottom: 24px;">Hello <strong>{{name}}</strong>,</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #a1a1aa;">The requested deployment has been finalized. Your environment is now synchronized with the latest MatrixMail aesthetic standards.</p>
+  <div style="margin-top: 40px; padding: 20px; background: #111; border: 1px solid #262626; border-radius: 8px; border-left: 4px solid #7c3aed;">
+    <p style="margin: 0; font-family: monospace; font-size: 13px; color: #7c3aed;">STATUS: SUCCESSFUL // PORT_OPEN: 8080</p>
   </div>
 </div>
     `,
-    system: `
-<div style="font-family: 'Inter', sans-serif; color: #2d232e; background: #fffcfc; padding: 40px; border: 1px solid rgba(255, 126, 179, 0.2); border-radius: 16px; max-width: 600px; margin: auto; box-shadow: 0 10px 40px rgba(255, 126, 179, 0.05);">
-  <h1 style="color: #ff7eb3; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 20px;">Soft Alert</h1>
-  <p style="color: #7d6e83; line-height: 1.6;">Minor adjustment needed in the design module. Please verify the component alignment.</p>
-  <button style="background: #ff7eb3; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; margin-top: 24px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(255, 126, 179, 0.2);">VIEW DETAILS</button>
-</div>
-    `,
-    void: `
-<div style="font-family: 'Inter', sans-serif; color: #7d6e83; background: #ffffff; padding: 60px; text-align: center; border: 1px solid #f0f0f0; border-radius: 16px; max-width: 600px; margin: auto;">
-  <div style="font-size: 48px; margin-bottom: 24px; color: #e0e0e0;">✦</div>
-  <p style="font-weight: 500; letter-spacing: 2px; color: #2d232e; text-transform: uppercase; font-size: 14px;">Minimal Zen</p>
-  <div style="width: 40px; height: 2px; background: #9d8df1; margin: 20px auto;"></div>
-  <p style="font-size: 13px; color: #a0a0a0; font-style: italic;">Where simplicity meets function.</p>
+
+    alert: `
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff; padding: 0; border: 1px solid #eaeaea; border-radius: 16px; max-width: 550px; margin: 20px auto; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+  <div style="background: #7c3aed; padding: 20px; text-align: center;">
+     <span style="color: #ffffff; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;">Security Alert</span>
+  </div>
+  <div style="padding: 40px 30px; text-align: center;">
+    <h2 style="color: #1a1a1a; margin: 0 0 15px 0; font-size: 24px; font-weight: 700;">Action Required</h2>
+    <p style="color: #666; line-height: 1.6; font-size: 15px; margin-bottom: 30px;">We detected an unusual login attempt from a new device. If this was not you, please secure your account immediately.</p>
+    <a href="#" style="background: #000000; color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">Verify Activity</a>
+  </div>
+  <div style="background: #fafafa; padding: 15px; text-align: center; border-top: 1px solid #eaeaea;">
+    <p style="margin: 0; font-size: 11px; color: #999;">MatrixMail Secure Link &copy; 2026</p>
+  </div>
 </div>
     `,
     "aesthetic-card": `
-<div style="font-family: 'Inter', sans-serif; color: #4a3f55; background: #fff; padding: 32px; border: 1px solid #f0edff; border-radius: 24px; max-width: 500px; margin: auto; box-shadow: 0 20px 40px rgba(157, 141, 241, 0.08);">
-  <div style="background: #f8f7ff; height: 200px; border-radius: 16px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; color: #9d8df1; font-size: 40px; font-weight: bold;">
-    ✨
+    <div style="font-family: -apple-system, sans-serif; background: #ffffff; padding: 32px; border: 1px solid #f3f0ff; border-radius: 24px; max-width: 500px; margin: 20px auto; box-shadow: 0 20px 40px rgba(124, 58, 237, 0.06);">
+  
+  <div style="background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); height: 220px; border-radius: 16px; margin-bottom: 24px; overflow: hidden;">
+    
+    <img 
+      src="https://picsum.photos/536/354" 
+      alt="Image"
+      style="width: 100%; height: 100%; object-fit: cover; display: block;"
+    />
+
   </div>
-  <h2 style="color: #9d8df1; margin: 0 0 12px 0; font-size: 24px; font-weight: 700;">Aesthetic Update</h2>
-  <p style="margin: 0 0 24px 0; line-height: 1.6; color: #7d6e83;">This is an example template designed to showcase the MatrixMail Editor's new pastel aesthetic. Minimal, clean, and professional.</p>
-  <div style="display: flex; gap: 12px;">
-    <span style="background: #f0edff; color: #9d8df1; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">PORTFOLIO</span>
-    <span style="background: #f8f7ff; color: #a1a1a1; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">NEW DESIGN</span>
+
+  <h2 style="color: #1f2937; margin: 0 0 10px 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Matrix Update</h2>
+
+  <p style="margin: 0 0 24px 0; line-height: 1.6; color: #4b5563; font-size: 15px;">
+    Discover the new standard of communication. Fast, secure, and aesthetically superior.
+  </p>
+
+  <div style="display: flex; align-items: center;">
+    <span style="background: #f5f3ff; color: #7c3aed; padding: 6px 16px; border-radius: 50px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #ddd6fe;">
+      REFERRAL ACTIVE
+    </span>
+    <span style="margin-left: auto; color: #9ca3af; font-size: 12px;">
+      v2.4.0
+    </span>
   </div>
+
 </div>
     `,
   }
 
   let userTemplates = {}
+
+  /**
+   * Custom aesthetic notification modal
+   * @param {Object} options - mode (alert/confirm/prompt), title, message, defaultValue
+   * @returns {Promise<any>}
+   */
+  const showModal = ({
+    mode = "alert",
+    title = "Notification",
+    message = "",
+    defaultValue = "",
+  }) => {
+    return new Promise((resolve) => {
+      modalTitle.innerText = title
+      modalMessage.innerText = message
+      modalInput.value = defaultValue
+
+      // Setup UI based on mode
+      if (mode === "prompt") {
+        modalInput.style.display = "block"
+        modalCancel.style.display = "block"
+        setTimeout(() => modalInput.focus(), 100)
+      } else if (mode === "confirm") {
+        modalInput.style.display = "none"
+        modalCancel.style.display = "block"
+      } else {
+        modalInput.style.display = "none"
+        modalCancel.style.display = "none"
+      }
+
+      modalOverlay.style.display = "flex"
+
+      const cleanup = (value) => {
+        modalOverlay.style.display = "none"
+        modalConfirm.removeEventListener("click", onConfirm)
+        modalCancel.removeEventListener("click", onCancel)
+        resolve(value)
+      }
+
+      const onConfirm = () => {
+        if (mode === "prompt") {
+          cleanup(modalInput.value)
+        } else {
+          cleanup(true)
+        }
+      }
+
+      const onCancel = () => {
+        cleanup(null)
+      }
+
+      modalConfirm.addEventListener("click", onConfirm)
+      modalCancel.addEventListener("click", onCancel)
+    })
+  }
 
   const updateDeleteButtonVisibility = () => {
     const currentVal = templateSelector.value
@@ -132,7 +214,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 3. Save Template Logic
   saveTplBtn.addEventListener("click", async () => {
-    const name = prompt("Enter a name for your custom template:")
+    const name = await showModal({
+      mode: "prompt",
+      title: "Save Template",
+      message: "Enter a name for your custom template:",
+      defaultValue: "",
+    })
+
     if (name && name.trim()) {
       const cleanName = name.trim().toLowerCase().replace(/\s+/g, "-")
       userTemplates[cleanName] = editor.value
@@ -148,9 +236,13 @@ document.addEventListener("DOMContentLoaded", () => {
   deleteTplBtn.addEventListener("click", async () => {
     const currentVal = templateSelector.value
     if (userTemplates[currentVal]) {
-      if (
-        confirm(`Are you sure you want to delete the template "${currentVal}"?`)
-      ) {
+      const confirmed = await showModal({
+        mode: "confirm",
+        title: "Delete Template",
+        message: `Are you sure you want to delete the template "${currentVal}"?`,
+      })
+
+      if (confirmed) {
         delete userTemplates[currentVal]
         await chrome.storage.local.set({ userTemplates })
         await refreshTemplates()
@@ -164,9 +256,13 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   // 5. Export Logic
-  exportTplBtn.addEventListener("click", () => {
+  exportTplBtn.addEventListener("click", async () => {
     if (Object.keys(userTemplates).length === 0) {
-      alert("No custom templates to export.")
+      await showModal({
+        mode: "alert",
+        title: "Export Failed",
+        message: "No custom templates to export.",
+      })
       return
     }
     const dataStr =
@@ -221,7 +317,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (err) {
         console.error("Import error details:", err)
-        alert("Import failed: " + err.message)
+        await showModal({
+          mode: "alert",
+          title: "Import Failed",
+          message: err.message,
+        })
         statusText.innerText = "Import failed"
         importInput.value = ""
       }
@@ -240,7 +340,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!tab || !tab.url.includes("mail.google.com")) {
         statusText.innerText = "Error: Open Gmail"
-        alert("Please open Gmail before pushing.")
+        await showModal({
+          mode: "alert",
+          title: "Action Required",
+          message: "Please open Gmail before pushing.",
+        })
         return
       }
 
@@ -250,12 +354,15 @@ document.addEventListener("DOMContentLoaded", () => {
           action: "inject",
           html: editor.value,
         },
-        (response) => {
+        async (response) => {
           if (chrome.runtime.lastError) {
             statusText.innerText = "Script error"
-            alert(
-              "Error: Gmail content script not ready. Refresh Gmail and try again.",
-            )
+            await showModal({
+              mode: "alert",
+              title: "Script Error",
+              message:
+                "Gmail content script not ready. Refresh Gmail and try again.",
+            })
             return
           }
 
@@ -266,7 +373,11 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => window.close(), 1500)
           } else {
             statusText.innerText = "Compose not found"
-            alert("Could not inject. Make sure a compose window is open.")
+            await showModal({
+              mode: "alert",
+              title: "Compose Box Missing",
+              message: "Could not inject. Make sure a compose window is open.",
+            })
           }
         },
       )
