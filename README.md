@@ -68,4 +68,4 @@ The project follows the **MatrixMail Pastel Zen** design system:
 
 ## 📄 License
 
-MIT License. Created for the "TwoM" Matrix ecosystem.
+MIT License
