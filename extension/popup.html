@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatrixMail Editor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="matrix-container">
+      <header>
+        <div class="logo-group">
+          <div class="logo">MATRIXMAIL</div>
+          <div class="version">Secure Editor v2.0</div>
+        </div>
+        <select id="template-selector" class="template-selector">
+          <option value="protocol">Matrix Protocol</option>
+          <option value="system">System Alert</option>
+          <option value="void">The Void</option>
+        </select>
+      </header>
+
+      <main>
+        <div class="editor-section">
+          <div class="label-group">
+            <div class="label">Source Code</div>
+          </div>
+          <textarea
+            id="code-editor"
+            spellcheck="false"
+            placeholder="Enter Matrix HTML..."
+          ></textarea>
+        </div>
+
+        <div class="preview-section">
+          <div class="label-group">
+            <div class="label">Live Output</div>
+          </div>
+          <div class="iframe-container">
+            <iframe id="preview-pane"></iframe>
+          </div>
+        </div>
+      </main>
+
+      <div class="footer">
+        <div class="status-indicator">
+          <div class="dot"></div>
+          <span id="status-text">Ready to inject</span>
+        </div>
+        <button id="push-btn">Push to Gmail</button>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
