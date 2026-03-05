@@ -106,7 +106,10 @@
           <div class="dot"></div>
           <span id="status-text">Ready to inject</span>
         </div>
-        <button id="push-btn">Push to Gmail</button>
+        <div>
+          <button id="push-btn">Push to Gmail</button>
+          <button id="ai-btn">AI enhanced</button>
+        </div>
       </div>
     </div>
 
@@ -125,6 +128,17 @@
             style="display: none"
             placeholder="Enter value..."
           />
+          <textarea
+            id="modal-textarea"
+            class="modal-input"
+            style="
+              display: none;
+              min-height: 100px;
+              resize: vertical;
+              margin-top: 10px;
+            "
+            placeholder="Enter instructions..."
+          ></textarea>
         </div>
         <div class="modal-footer">
           <button id="modal-cancel" class="btn-secondary">Cancel</button>

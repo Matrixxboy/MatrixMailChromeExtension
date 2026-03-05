@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const editor = document.getElementById("code-editor")
   const preview = document.getElementById("preview-pane")
   const pushBtn = document.getElementById("push-btn")
+  const aiBtn = document.getElementById("ai-btn")
   const templateSelector = document.getElementById("template-selector")
   const statusText = document.getElementById("status-text")
   const saveTplBtn = document.getElementById("save-tpl-btn")
@@ -15,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalTitle = document.getElementById("modal-title")
   const modalMessage = document.getElementById("modal-message")
   const modalInput = document.getElementById("modal-input")
+  const modalTextarea = document.getElementById("modal-textarea")
   const modalCancel = document.getElementById("modal-cancel")
   const modalConfirm = document.getElementById("modal-confirm")
 
@@ -23,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     !editor ||
     !preview ||
     !pushBtn ||
+    !aiBtn ||
     !templateSelector ||
     !statusText ||
     !saveTplBtn ||
@@ -30,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
     !exportTplBtn ||
     !importTplBtn ||
     !importInput ||
-    !modalOverlay
+    !modalOverlay ||
+    !modalTextarea
   ) {
     console.error("Missing DOM elements. Check popup.html IDs.")
     return
@@ -112,17 +116,26 @@ document.addEventListener("DOMContentLoaded", () => {
       modalTitle.innerText = title
       modalMessage.innerText = message
       modalInput.value = defaultValue
+      modalTextarea.value = defaultValue
 
       // Setup UI based on mode
       if (mode === "prompt") {
         modalInput.style.display = "block"
+        modalTextarea.style.display = "none"
         modalCancel.style.display = "block"
         setTimeout(() => modalInput.focus(), 100)
+      } else if (mode === "long-prompt") {
+        modalInput.style.display = "none"
+        modalTextarea.style.display = "block"
+        modalCancel.style.display = "block"
+        setTimeout(() => modalTextarea.focus(), 100)
       } else if (mode === "confirm") {
         modalInput.style.display = "none"
+        modalTextarea.style.display = "none"
         modalCancel.style.display = "block"
       } else {
         modalInput.style.display = "none"
+        modalTextarea.style.display = "none"
         modalCancel.style.display = "none"
       }
 
@@ -138,6 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const onConfirm = () => {
         if (mode === "prompt") {
           cleanup(modalInput.value)
+        } else if (mode === "long-prompt") {
+          cleanup(modalTextarea.value)
         } else {
           cleanup(true)
         }
@@ -384,6 +399,82 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error(err)
       statusText.innerText = "Runtime error"
+    }
+  })
+
+  // 8. AI Button Logic
+  aiBtn.addEventListener("click", async () => {
+    const promptText = await showModal({
+      mode: "long-prompt",
+      title: "AI Enhance",
+      message: "Enter instructions to enhance the current template:",
+      defaultValue: "",
+    })
+
+    if (!promptText || !promptText.trim()) return
+
+    try {
+      statusText.innerText = "Contacting AI..."
+      const currentCode = editor.value
+
+      const response = await fetch(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`, // Generate at openrouter.ai
+            "Content-Type": "application/json",
+            // Optional: "HTTP-Referer": "YOUR_SITE_URL",
+            // Optional: "X-Title": "YOUR_APP_NAME"
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-lite", // Example model
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are an expert HTML email and web template designer. You MUST return ONLY the raw, valid, updated HTML code. Do NOT output any conversational text, explanations, or markdown code blocks (like ```html). Start immediately with the HTML tags.",
+              },
+              {
+                role: "user",
+                content: `User Request: "${promptText}"\n\nExisting Code to Modify:\n${currentCode}`,
+              },
+            ],
+            temperature: 0.1, // Lower temperature to reduce chattiness
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        const errText = await response.text()
+        console.error("OpenRouter API Error Status:", response.status)
+        console.error("OpenRouter API Error Details:", errText)
+        throw new Error(`API Error ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (data && data.error) {
+        console.error("OpenRouter API returned an error object:", data.error)
+        throw new Error(data.error.message || "Unknown API Error")
+      }
+
+      if (data && data.choices && data.choices.length > 0) {
+        let aiResult = data.choices[0].message.content
+        // Clean up markdown block wrappers if present
+        aiResult = aiResult
+          .replace(/^```html\n?/, "")
+          .replace(/\n?```$/, "")
+          .trim()
+        editor.value = aiResult
+        updatePreview()
+        statusText.innerText = "AI enhancement applied"
+      } else {
+        console.error("Unexpected OpenRouter response structure:", data)
+        throw new Error("Invalid AI response structure")
+      }
+    } catch (err) {
+      console.error("AI Error Execution Failed:", err)
+      statusText.innerText = "AI generation failed"
     }
   })
 

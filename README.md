@@ -10,6 +10,7 @@ Built with a **Precision Pastel Zen** theme, it features a side-by-side workspac
 
 - **Widescreen Workspace**: Side-by-side Editor and Live Preview for maximum productivity.
 - **Instant Sync**: Real-time rendering of HTML/CSS within the window.
+- **AI Enhancement**: Power up your templates using OpenRouter models directly from the UI.
 - **Local Template Management**: Persistent storage using Chrome's local storage—no backend required.
 - **Professional Icons**: High-fidelity SVG icon system with smooth hover states.
 - **Aesthetic Notifications**: Custom glassmorphism modals for alerts, confirmations, and prompts.
@@ -28,6 +29,20 @@ Built with a **Precision Pastel Zen** theme, it features a side-by-side workspac
 
 ## 📖 How to Use
 
+### 🎮 UI Guide & Buttons
+
+Here is a breakdown of the editor interface and what each button does:
+
+- **Template Selector (Top Dropdown)**: Switch between default aesthetic templates (Matrix Protocol, System Alert, The Void) and any of your saved custom templates.
+- 💾 **Save Icon**: Save the current source code to your local Chrome storage as a new, named template.
+- 🗑️ **Delete Icon**: Appears only when you have a _custom_ template selected. Click to permanently delete it from local storage.
+- 📤 **Export Icon**: Download a `.json` file backup of every custom template you've created.
+- 📥 **Import Icon**: Upload a `.json` backup file to merge previously exported templates back into the editor.
+- 🚀 **Push to Gmail**: When you are satisfied with the Live Preview, click this button to automagically inject the HTML straight into an open Gmail Compose window.
+- 🤖 **AI enhanced**: Click to enter an instruction prompt. An AI model will analyze your prompt and your current code, returning a heavily improved/altered version of your HTML instantly.
+
+---
+
 ### 1. Basic Editing
 
 1. Open Gmail and click the **Compose** button to open a message box.
@@ -36,7 +51,14 @@ Built with a **Precision Pastel Zen** theme, it features a side-by-side workspac
 4. Watch the **Live Output** update instantly on the right.
 5. Click **Push to Gmail** to inject the code into your compose box.
 
-### 2. Saving Custom Templates
+### 2. AI Template Enhancement
+
+1. Load a template or paste your code into the editor.
+2. Click the **AI enhanced** button in the bottom right.
+3. A modal will appear—type instructions on how you want to modify or improve the template (e.g., "Change the colors to dark mode" or "Make this look like a newsletter from Utsav Lankapati").
+4. Click **Confirm**. The editor will contact the AI, process your request, and instantly update your code and live preview!
+
+### 3. Saving Custom Templates
 
 1. Type or paste your custom HTML into the editor.
 2. Click the **Save** (💾) icon.
@@ -68,4 +90,4 @@ The project follows the **MatrixMail Pastel Zen** design system:
 
 ## 📄 License
 
-MIT License. Created for the "TwoM" Matrix ecosystem.
+MIT License
