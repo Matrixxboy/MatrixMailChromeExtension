@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`, // Generate at openrouter.ai
+            Authorization: `Bearer sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`, // Generate at openrouter.ai
             "Content-Type": "application/json",
             // Optional: "HTTP-Referer": "YOUR_SITE_URL",
             // Optional: "X-Title": "YOUR_APP_NAME"
