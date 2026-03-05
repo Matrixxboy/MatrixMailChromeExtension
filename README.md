@@ -41,6 +41,7 @@ Here is a breakdown of the editor interface and what each button does:
 - 🚀 **Push to Gmail**: When you are satisfied with the Live Preview, click this button to automagically inject the HTML straight into an open Gmail Compose window.
 - 🤖 **AI enhanced**: Click to enter an instruction prompt. An AI model will analyze your prompt and your current code, returning a heavily improved/altered version of your HTML instantly.
 
+
 ---
 
 ### 1. Basic Editing
